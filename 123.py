@@ -2,7 +2,8 @@ import os
 import sys
 
 from argparse import ArgumentParser
-
+import requests
+import json
 from flask import Flask, request, abort
 from linebot import (
     LineBotApi, WebhookHandler
@@ -13,7 +14,17 @@ from linebot.exceptions import (
 from linebot.models import (
     MessageEvent, TextMessage, TextSendMessage,
 )
+def send2slack(text):
+    aa="hero: "+text
+    s_url = 'https://hooks.slack.com/services/T72SGPDV2/B745DN7B9/t1YkLh4LMoUkmXXxX2XZ4gln'
 
+    dict_headers = {'Content-type': 'application/json'}
+
+    dict_payload = {
+        "text": aa}
+    json_payload = json.dumps(dict_payload)
+
+    rtn = requests.post(s_url, data=json_payload, headers=dict_headers)
 app = Flask(__name__)
 
 # get channel_secret and channel_access_token from your environment variable
@@ -42,6 +53,7 @@ def callback():
     textt = eval(body)['events'][0]['message']['text']
     # toslack.slack_send(textt)
     print(textt)
+    send2slack(textt)
     # handle webhook body
     try:
         handler.handle(body, signature)
