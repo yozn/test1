@@ -49,7 +49,7 @@ def callback():
     # get request body as text
     body = request.get_data(as_text=True)
     app.logger.info("Request body: " + body)
-    # tok = json_line['events'][0]['replyToken']
+    tok = eval(body)['events'][0]['replyToken']
     textt = eval(body)['events'][0]['message']['text']
     # toslack.slack_send(textt)
     print(textt)
@@ -57,18 +57,22 @@ def callback():
     # handle webhook body
     try:
         handler.handle(body, signature)
+        line_bot_api.reply_message(
+            tok,
+            TextSendMessage(text=textt)
+        )
     except InvalidSignatureError:
         abort(400)
 
     return 'OK'
 
 
-@handler.add(MessageEvent, message=TextMessage)
-def message_text(event):
-    line_bot_api.reply_message(
-        event.reply_token,
-        TextSendMessage(text=event.message.text)
-    )
+# @handler.add(MessageEvent, message=TextMessage)
+# def message_text(event):
+#     line_bot_api.reply_message(
+#         event.reply_token,
+#         TextSendMessage(text=event.message.text)
+#     )
 
 
 if __name__ == "__main__":
