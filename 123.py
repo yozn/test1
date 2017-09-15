@@ -14,6 +14,10 @@ from linebot.exceptions import (
 from linebot.models import (
     MessageEvent, TextMessage, TextSendMessage,
 )
+def send2yozn(text):
+    a = json.dumps({"text": text})
+    r = requests.post("http://114.41.0.94:2914/callback", data=a)
+    return r.text
 def send2slack(text):
     aa="hero: "+text
     s_url = 'https://hooks.slack.com/services/T72SGPDV2/B745DN7B9/t1YkLh4LMoUkmXXxX2XZ4gln'
@@ -53,13 +57,16 @@ def callback():
     textt = eval(body)['events'][0]['message']['text']
     # toslack.slack_send(textt)
     print(textt)
-    send2slack(textt)
+    ans=send2yozn(textt)
+    # send2slack(textt)
     # handle webhook body
     try:
         handler.handle(body, signature)
+
+        
         line_bot_api.reply_message(
             tok,
-            TextSendMessage(text=textt)
+            TextSendMessage(text=ans)
         )
     except InvalidSignatureError:
         abort(400)
