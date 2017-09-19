@@ -16,7 +16,7 @@ from linebot.models import (
 )
 def send2yozn(text):
     a = json.dumps({"text": text})
-    r = requests.post("http://114.41.0.94:2914/callback", data=a)
+    r = requests.post("http://140.134.26.28:2914/callback", data=a)
     return r.text
 def send2slack(text):
     aa="hero: "+text
